@@ -6,8 +6,24 @@ PiwikTracker is a C++ Qt 5 library for tracking with the open-source analytics
 platform [Piwik](http://piwik.org/).
 
 ## Features
+
 - sending visits
 - sending events
 - custom dimensions can be sent along with visits and events 
 - language, screen resolution and operating system will be tracked automatically
 - client id will be generated and stored automatically
+
+## How to use this library
+
+- checkout the git repository
+- include [piwiktracker.pri](https://github.com/pbek/qt-piwik-tracker/blob/master/piwiktracker.pri) 
+  to your project like this: `include (qt-piwik-tracker/piwiktracker.pri)`
+- include `piwiktracker.h` in your `.cpp` file
+- use the library to talk to your Piwik server
+
+```cpp
+// the 3rd parameter is the site id
+PiwikTracker *piwikTracker = new PiwikTracker(qApp, QUrl("https://yourserver"), 1);
+piwikTracker->setCustomDimension(1, "some dimension");
+piwikTracker->sendVisit("my/path");
+```
