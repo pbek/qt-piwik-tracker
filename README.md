@@ -9,7 +9,8 @@ platform [Piwik](http://piwik.org/).
 
 - sending visits
 - sending events
-- custom dimensions can be sent along with visits and events 
+- sending pings
+- custom dimensions can be sent along with the requests 
 - language, screen resolution and operating system will be tracked automatically
 - client id will be generated and stored automatically
 

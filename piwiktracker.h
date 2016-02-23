@@ -38,6 +38,7 @@ public:
                           int siteId,
                           QString clientId = "");
     void sendVisit(QString path, QString actionName = "");
+    void sendPing();
     void sendEvent(
             QString path,
             QString eventCategory,

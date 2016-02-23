@@ -207,6 +207,25 @@ void PiwikTracker::sendVisit(QString path, QString actionName) {
 }
 
 /**
+ * Sends a ping request
+ */
+void PiwikTracker::sendPing() {
+    QUrl url(_trackerUrl.toString() + "/piwik.php");
+    QUrlQuery q = prepareUrlQuery("");
+    q.addQueryItem("ping", "1");
+    url.setQuery(q);
+
+    QNetworkReply *reply = _networkAccessManager.get(QNetworkRequest(url));
+
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            this, SLOT(replyError(QNetworkReply::NetworkError)));
+
+#if PIWIK_TRACKER_DEBUG
+    qDebug() << __func__ << " - 'url': " << url;
+#endif
+}
+
+/**
  * Sends an event request
  */
 void PiwikTracker::sendEvent(
