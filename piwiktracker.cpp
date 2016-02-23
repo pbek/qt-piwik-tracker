@@ -124,9 +124,14 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
 #endif
 
     // for QT >= 5.4 we can use QSysInfo
+    // Piwik doesn't recognize that on Mac OS X very well
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
+#ifdef Q_OS_MAC
+    operatingSystem = "Macintosh " + QSysInfo::prettyProductName();
+#else
     operatingSystem = QSysInfo::prettyProductName() +", " +
             QSysInfo::currentCpuArchitecture();
+#endif
 #endif
 
     // get the locale
@@ -147,6 +152,7 @@ QUrlQuery PiwikTracker::prepareUrlQuery(QString path) {
     QUrlQuery q;
     q.addQueryItem("idsite", QString::number(_siteId));
     q.addQueryItem("_id", _clientId);
+    q.addQueryItem("cid", _clientId);
     q.addQueryItem("url", "http://" + _appName + "/" + path);
 
     // to record the request
