@@ -5,8 +5,7 @@
 #include <iostream>
 #include "testcases/app/test_library.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
 
     QCoreApplication::setOrganizationDomain("PBE");
