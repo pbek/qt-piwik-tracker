@@ -1,7 +1,7 @@
 #include <QTest>
 #include <QApplication>
 
-//tests
+// tests
 #include <iostream>
 #include "testcases/app/test_library.h"
 
