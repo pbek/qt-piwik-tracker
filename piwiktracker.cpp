@@ -183,16 +183,48 @@ QUrlQuery PiwikTracker::prepareUrlQuery(QString path) {
     return q;
 }
 
+QString PiwikTracker::getVisitVariables()
+{
+    QString varString;
+    /**
+      * See spec at https://github.com/piwik/piwik/issues/2165
+      * Need to pass in format {"1":["key1","value1"],"2":["key2","value2"]}
+      */
+    if( _visitVariables.count() > 0 ) {
+        QHash<QString, QString>::iterator i;
+        varString.append("{");
+        int num=0;
+        for (i = _visitVariables.begin(); i != _visitVariables.end(); ++i) {
+            if( num != 0 )
+            {
+                varString.append(",");
+            }
+            QString thisvar=QString("\"%1\":[\"%2\",\"%3\"]").arg(num+1).arg(i.key()).arg(i.value());
+            varString.append(thisvar);
+            num++;
+        }
+        varString.append("}");
+    }
+    return varString;
+}
+
+
 /**
- * Sends a visit request
+ * Sends a visit request with visit variables
  */
 void PiwikTracker::sendVisit(QString path, QString actionName) {
     QUrl url(_trackerUrl.toString() + "/piwik.php");
     QUrlQuery q = prepareUrlQuery(path);
+    QString visitVars=getVisitVariables();
 
+    if( visitVars.size() != 0 )
+    {
+        q.addQueryItem("_cvar",visitVars);
+    }
     if (!actionName.isEmpty()) {
         q.addQueryItem("action_name", actionName);
     }
+
 
     url.setQuery(q);
 
@@ -280,6 +312,15 @@ void PiwikTracker::sendEvent(
  */
 void PiwikTracker::setCustomDimension(int id, QString value) {
     _customDimensions[id] = value;
+}
+
+/**
+ * @brief PiwikTracker::setCustomVisitVariables
+ * @param name The name of the custom variable to set (key)
+ * @param value The value to set for this custom variable
+ */
+void PiwikTracker::setCustomVisitVariables(QString name, QString value) {
+    _visitVariables[name]=value;
 }
 
 void PiwikTracker::replyFinished(QNetworkReply * reply) {

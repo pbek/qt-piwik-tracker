@@ -46,6 +46,7 @@ public:
             QString eventName = "",
             int eventValue = 0);
     void setCustomDimension(int id, QString value);
+    void setCustomVisitVariables(QString key, QString value);
 
 private:
     mutable QNetworkAccessManager _networkAccessManager;
@@ -57,8 +58,9 @@ private:
     QString _userAgent;
     QString _userLanguage;
     QHash<int, QString> _customDimensions;
+    QHash<QString, QString> _visitVariables;
     QUrlQuery prepareUrlQuery(QString path);
-
+    QString getVisitVariables();
 private Q_SLOTS:
 
     void replyFinished(QNetworkReply * reply);
