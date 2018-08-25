@@ -1,10 +1,10 @@
-# [Qt C++ Piwik Tracker Library](https://github.com/pbek/qt-piwik-tracker)
+# [Qt C++ Piwik / Matomo Tracker Library](https://github.com/pbek/qt-piwik-tracker)
 [![Build Status Linux/OS X](https://travis-ci.org/pbek/qt-piwik-tracker.svg?branch=master)](https://travis-ci.org/pbek/qt-piwik-tracker)
 [![Build Status Windows](https://ci.appveyor.com/api/projects/status/github/pbek/qt-piwik-tracker)](https://ci.appveyor.com/project/pbek/qt-piwik-tracker)
 [![Coverage Status](https://coveralls.io/repos/github/pbek/qt-piwik-tracker/badge.svg?branch=master)](https://coveralls.io/github/pbek/qt-piwik-tracker?branch=master)
 
 PiwikTracker is a C++ Qt 5 library for tracking with the open-source analytics 
-platform [Piwik](http://piwik.org/).
+platform [Piwik, now Matomo](https://matomo.org//).
 
 ## Features
 
@@ -21,7 +21,7 @@ platform [Piwik](http://piwik.org/).
 - include [piwiktracker.pri](https://github.com/pbek/qt-piwik-tracker/blob/master/piwiktracker.pri) 
   to your project like this: `include (qt-piwik-tracker/piwiktracker.pri)`
 - include `piwiktracker.h` in your `.cpp` file
-- use the library to talk to your Piwik server
+- use the library to talk to your Piwik / Matomo server
 
 ```cpp
 // the 3rd parameter is the site id
