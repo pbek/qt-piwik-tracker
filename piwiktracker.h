@@ -37,16 +37,16 @@ public:
                           QUrl trackerUrl,
                           int siteId,
                           QString clientId = "");
-    void sendVisit(QString path, QString actionName = "");
+    void sendVisit(const QString& path, const QString& actionName = "");
     void sendPing();
     void sendEvent(
-            QString path,
-            QString eventCategory,
-            QString eventAction,
-            QString eventName = "",
+            const QString& path,
+            const QString& eventCategory,
+            const QString& eventAction,
+            const QString& eventName = "",
             int eventValue = 0);
     void setCustomDimension(int id, QString value);
-    void setCustomVisitVariables(QString key, QString value);
+    void setCustomVisitVariables(const QString& key, QString value);
 
 private:
     mutable QNetworkAccessManager _networkAccessManager;
@@ -59,7 +59,7 @@ private:
     QString _userLanguage;
     QHash<int, QString> _customDimensions;
     QHash<QString, QString> _visitVariables;
-    QUrlQuery prepareUrlQuery(QString path);
+    QUrlQuery prepareUrlQuery(const QString& path);
     QString getVisitVariables();
 private Q_SLOTS:
 

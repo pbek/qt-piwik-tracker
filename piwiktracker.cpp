@@ -34,6 +34,7 @@
 #include <QUrlQuery>
 #include <QSettings>
 #include <QUuid>
+#include <utility>
 
 #if defined(PIWIK_TRACKER_QTQUICK)
 #include <QGuiApplication>
@@ -55,9 +56,9 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
                            QString clientId) :
         QObject(parent),
         _networkAccessManager(this),
-        _trackerUrl(trackerUrl),
+        _trackerUrl(std::move(trackerUrl)),
         _siteId(siteId),
-        _clientId(clientId) {
+        _clientId(std::move(clientId)) {
     connect(
             &_networkAccessManager,
             SIGNAL(finished(QNetworkReply *)),
@@ -148,7 +149,7 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
 /**
  * Prepares the common query items for the tracking request
  */
-QUrlQuery PiwikTracker::prepareUrlQuery(QString path) {
+QUrlQuery PiwikTracker::prepareUrlQuery(const QString& path) {
     QUrlQuery q;
     q.addQueryItem("idsite", QString::number(_siteId));
     q.addQueryItem("_id", _clientId);
@@ -199,7 +200,7 @@ QString PiwikTracker::getVisitVariables()
             {
                 varString.append(",");
             }
-            QString thisvar=QString("\"%1\":[\"%2\",\"%3\"]").arg(num+1).arg(i.key()).arg(i.value());
+            QString thisvar=QString(R"("%1":["%2","%3"])").arg(num+1).arg(i.key()).arg(i.value());
             varString.append(thisvar);
             num++;
         }
@@ -212,7 +213,7 @@ QString PiwikTracker::getVisitVariables()
 /**
  * Sends a visit request with visit variables
  */
-void PiwikTracker::sendVisit(QString path, QString actionName) {
+void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
     QUrl url(_trackerUrl.toString() + "/piwik.php");
     QUrlQuery q = prepareUrlQuery(path);
     QString visitVars=getVisitVariables();
@@ -277,10 +278,10 @@ void PiwikTracker::sendPing() {
  * Sends an event request
  */
 void PiwikTracker::sendEvent(
-        QString path,
-        QString eventCategory,
-        QString eventAction,
-        QString eventName,
+        const QString& path,
+        const QString& eventCategory,
+        const QString& eventAction,
+        const QString& eventName,
         int eventValue) {
     QUrl url(_trackerUrl.toString() + "/piwik.php");
     QUrlQuery q = prepareUrlQuery(path);
@@ -323,7 +324,7 @@ void PiwikTracker::sendEvent(
  * Sets a custom dimension
  */
 void PiwikTracker::setCustomDimension(int id, QString value) {
-    _customDimensions[id] = value;
+    _customDimensions[id] = std::move(value);
 }
 
 /**
@@ -331,8 +332,8 @@ void PiwikTracker::setCustomDimension(int id, QString value) {
  * @param name The name of the custom variable to set (key)
  * @param value The value to set for this custom variable
  */
-void PiwikTracker::setCustomVisitVariables(QString name, QString value) {
-    _visitVariables[name]=value;
+void PiwikTracker::setCustomVisitVariables(const QString& name, QString value) {
+    _visitVariables[name]=std::move(value);
 }
 
 void PiwikTracker::replyFinished(QNetworkReply * reply) {
