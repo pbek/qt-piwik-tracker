@@ -226,7 +226,6 @@ void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
         q.addQueryItem("action_name", actionName);
     }
 
-
     url.setQuery(q);
 
     // try to ensure the network is accessible
