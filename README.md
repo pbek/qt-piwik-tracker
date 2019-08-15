@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/pbek/qt-piwik-tracker/badge.svg?branch=master)](https://coveralls.io/github/pbek/qt-piwik-tracker?branch=master)
 
 PiwikTracker is a C++ Qt 5 library for tracking with the open-source analytics 
-platform [Piwik, now Matomo](https://matomo.org//).
+platform [Piwik, now Matomo](https://matomo.org/).
 
 ## Features
 
