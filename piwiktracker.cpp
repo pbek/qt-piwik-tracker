@@ -41,8 +41,8 @@
 #include <QScreen>
 #else
 #ifdef QT_GUI_LIB
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 #endif
 #endif
 
@@ -103,9 +103,9 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
 #ifdef QT_GUI_LIB
     _screenResolution =
             QString::number(
-                    QApplication::desktop()->screenGeometry().width()) + "x"
+                    QGuiApplication::primaryScreen()->geometry().width()) + "x"
                     + QString::number(
-                    QApplication::desktop()->screenGeometry().height());
+                    QGuiApplication::primaryScreen()->geometry().height());
 #endif
 #endif
 
