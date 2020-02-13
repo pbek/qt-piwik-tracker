@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,31 +24,25 @@
 
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QUrl>
-
 
 class PiwikTracker : public QObject {
     Q_OBJECT
 
-public:
-    explicit PiwikTracker(QCoreApplication * parent,
-                          QUrl trackerUrl,
-                          int siteId,
+   public:
+    explicit PiwikTracker(QCoreApplication* parent, QUrl trackerUrl, int siteId,
                           QString clientId = "");
     void sendVisit(const QString& path, const QString& actionName = "");
     void sendPing();
-    void sendEvent(
-            const QString& path,
-            const QString& eventCategory,
-            const QString& eventAction,
-            const QString& eventName = "",
-            int eventValue = 0);
+    void sendEvent(const QString& path, const QString& eventCategory,
+                   const QString& eventAction, const QString& eventName = "",
+                   int eventValue = 0);
     void setCustomDimension(int id, QString value);
     void setCustomVisitVariables(const QString& key, QString value);
 
-private:
+   private:
     mutable QNetworkAccessManager _networkAccessManager;
     QString _appName;
     QUrl _trackerUrl;
@@ -61,8 +55,8 @@ private:
     QHash<QString, QString> _visitVariables;
     QUrlQuery prepareUrlQuery(const QString& path);
     QString getVisitVariables();
-private Q_SLOTS:
+   private Q_SLOTS:
 
-    void replyFinished(QNetworkReply * reply);
+    void replyFinished(QNetworkReply* reply);
     void replyError(QNetworkReply::NetworkError code);
 };

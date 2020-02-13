@@ -8,8 +8,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -31,8 +31,9 @@
  */
 
 #include "piwiktracker.h"
-#include <QUrlQuery>
+
 #include <QSettings>
+#include <QUrlQuery>
 #include <QUuid>
 #include <utility>
 
@@ -50,20 +51,15 @@
 #define PIWIK_TRACKER_DEBUG 0
 #endif
 
-PiwikTracker::PiwikTracker(QCoreApplication * parent,
-                           QUrl trackerUrl,
-                           int siteId,
-                           QString clientId) :
-        QObject(parent),
-        _networkAccessManager(this),
-        _trackerUrl(std::move(trackerUrl)),
-        _siteId(siteId),
-        _clientId(std::move(clientId)) {
-    connect(
-            &_networkAccessManager,
-            SIGNAL(finished(QNetworkReply *)),
-            this,
-            SLOT(replyFinished(QNetworkReply *)));
+PiwikTracker::PiwikTracker(QCoreApplication* parent, QUrl trackerUrl,
+                           int siteId, QString clientId)
+    : QObject(parent),
+      _networkAccessManager(this),
+      _trackerUrl(std::move(trackerUrl)),
+      _siteId(siteId),
+      _clientId(std::move(clientId)) {
+    connect(&_networkAccessManager, SIGNAL(finished(QNetworkReply*)), this,
+            SLOT(replyFinished(QNetworkReply*)));
 
     if (parent) {
         _appName = parent->applicationName();
@@ -79,9 +75,7 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
 
             // generate a random md5 hash
             QString md5Hash = QString(
-                    QCryptographicHash::hash(
-                            ba,
-                            QCryptographicHash::Md5).toHex());
+                QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex());
 
             // the client id has to be a 16 character hex code
             _clientId = md5Hash.left(16);
@@ -97,15 +91,14 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
     // get the screen resolution for gui apps
 #if defined(PIWIK_TRACKER_QTQUICK)
     QScreen* screen = qApp->primaryScreen();
-    _screenResolution = QString::number(screen->geometry().width())
-        + "x" + QString::number(screen->geometry().height());
+    _screenResolution = QString::number(screen->geometry().width()) + "x" +
+                        QString::number(screen->geometry().height());
 #else
 #ifdef QT_GUI_LIB
     _screenResolution =
-            QString::number(
-                    QGuiApplication::primaryScreen()->geometry().width()) + "x"
-                    + QString::number(
-                    QGuiApplication::primaryScreen()->geometry().height());
+        QString::number(QGuiApplication::primaryScreen()->geometry().width()) +
+        "x" +
+        QString::number(QGuiApplication::primaryScreen()->geometry().height());
 #endif
 #endif
 
@@ -130,8 +123,8 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
 #ifdef Q_OS_MAC
     operatingSystem = "Macintosh " + QSysInfo::prettyProductName();
 #else
-    operatingSystem = QSysInfo::prettyProductName() +", " +
-            QSysInfo::currentCpuArchitecture();
+    operatingSystem = QSysInfo::prettyProductName() + ", " +
+                      QSysInfo::currentCpuArchitecture();
 #endif
 #endif
 
@@ -139,8 +132,9 @@ PiwikTracker::PiwikTracker(QCoreApplication * parent,
     QString locale = QLocale::system().name().toLower().replace("_", "-");
 
     // set the user agent
-    _userAgent = "Mozilla/5.0 (" + operatingSystem + "; " + locale + ") "
-                      "PiwikTracker/0.1 (Qt/" QT_VERSION_STR " )";
+    _userAgent = "Mozilla/5.0 (" + operatingSystem + "; " + locale +
+                 ") "
+                 "PiwikTracker/0.1 (Qt/" QT_VERSION_STR " )";
 
     // set the user language
     _userLanguage = locale;
@@ -184,23 +178,24 @@ QUrlQuery PiwikTracker::prepareUrlQuery(const QString& path) {
     return q;
 }
 
-QString PiwikTracker::getVisitVariables()
-{
+QString PiwikTracker::getVisitVariables() {
     QString varString;
     /**
-      * See spec at https://github.com/piwik/piwik/issues/2165
-      * Need to pass in format {"1":["key1","value1"],"2":["key2","value2"]}
-      */
-    if( _visitVariables.count() > 0 ) {
+     * See spec at https://github.com/piwik/piwik/issues/2165
+     * Need to pass in format {"1":["key1","value1"],"2":["key2","value2"]}
+     */
+    if (_visitVariables.count() > 0) {
         QHash<QString, QString>::iterator i;
         varString.append("{");
-        int num=0;
+        int num = 0;
         for (i = _visitVariables.begin(); i != _visitVariables.end(); ++i) {
-            if( num != 0 )
-            {
+            if (num != 0) {
                 varString.append(",");
             }
-            QString thisvar=QString(R"("%1":["%2","%3"])").arg(num+1).arg(i.key()).arg(i.value());
+            QString thisvar = QString(R"("%1":["%2","%3"])")
+                                  .arg(num + 1)
+                                  .arg(i.key())
+                                  .arg(i.value());
             varString.append(thisvar);
             num++;
         }
@@ -209,18 +204,16 @@ QString PiwikTracker::getVisitVariables()
     return varString;
 }
 
-
 /**
  * Sends a visit request with visit variables
  */
 void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
     QUrl url(_trackerUrl.toString() + "/piwik.php");
     QUrlQuery q = prepareUrlQuery(path);
-    QString visitVars=getVisitVariables();
+    QString visitVars = getVisitVariables();
 
-    if( visitVars.size() != 0 )
-    {
-        q.addQueryItem("_cvar",visitVars);
+    if (visitVars.size() != 0) {
+        q.addQueryItem("_cvar", visitVars);
     }
     if (!actionName.isEmpty()) {
         q.addQueryItem("action_name", actionName);
@@ -230,12 +223,12 @@ void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
 
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
-            QNetworkAccessManager::Accessible);
+        QNetworkAccessManager::Accessible);
 
-    QNetworkReply *reply = _networkAccessManager.get(QNetworkRequest(url));
+    QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(replyError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
@@ -257,12 +250,12 @@ void PiwikTracker::sendPing() {
 
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
-            QNetworkAccessManager::Accessible);
+        QNetworkAccessManager::Accessible);
 
-    QNetworkReply *reply = _networkAccessManager.get(QNetworkRequest(url));
+    QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(replyError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
@@ -276,12 +269,9 @@ void PiwikTracker::sendPing() {
 /**
  * Sends an event request
  */
-void PiwikTracker::sendEvent(
-        const QString& path,
-        const QString& eventCategory,
-        const QString& eventAction,
-        const QString& eventName,
-        int eventValue) {
+void PiwikTracker::sendEvent(const QString& path, const QString& eventCategory,
+                             const QString& eventAction,
+                             const QString& eventName, int eventValue) {
     QUrl url(_trackerUrl.toString() + "/piwik.php");
     QUrlQuery q = prepareUrlQuery(path);
 
@@ -303,12 +293,12 @@ void PiwikTracker::sendEvent(
 
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
-            QNetworkAccessManager::Accessible);
+        QNetworkAccessManager::Accessible);
 
-    QNetworkReply *reply = _networkAccessManager.get(QNetworkRequest(url));
+    QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(replyError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
@@ -332,10 +322,10 @@ void PiwikTracker::setCustomDimension(int id, QString value) {
  * @param value The value to set for this custom variable
  */
 void PiwikTracker::setCustomVisitVariables(const QString& name, QString value) {
-    _visitVariables[name]=std::move(value);
+    _visitVariables[name] = std::move(value);
 }
 
-void PiwikTracker::replyFinished(QNetworkReply * reply) {
+void PiwikTracker::replyFinished(QNetworkReply* reply) {
 #if PIWIK_TRACKER_DEBUG
     qDebug() << "Reply from " << reply->url().path();
 #else
