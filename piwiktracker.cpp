@@ -90,16 +90,18 @@ PiwikTracker::PiwikTracker(QCoreApplication* parent, QUrl trackerUrl,
 
     // get the screen resolution for gui apps
 #if defined(PIWIK_TRACKER_QTQUICK)
-    QScreen* screen = qApp->primaryScreen();
-    _screenResolution = QString::number(screen->geometry().width()) + "x" +
-                        QString::number(screen->geometry().height());
+    QScreen *primaryScreen = qApp->primaryScreen();
 #else
 #ifdef QT_GUI_LIB
-    _screenResolution =
-        QString::number(QGuiApplication::primaryScreen()->geometry().width()) +
-        "x" +
-        QString::number(QGuiApplication::primaryScreen()->geometry().height());
+    QScreen *primaryScreen = QGuiApplication::primaryScreen();
 #endif
+#endif
+
+#if defined(PIWIK_TRACKER_QTQUICK) || defined(QT_GUI_LIB)
+    if (primaryScreen != nullptr) {
+        _screenResolution = QString::number(primaryScreen->geometry().width()) +
+                "x" + QString::number(primaryScreen->geometry().height());
+    }
 #endif
 
     // try to get the operating system
