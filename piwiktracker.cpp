@@ -223,9 +223,11 @@ void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
 
     url.setQuery(q);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
         QNetworkAccessManager::Accessible);
+#endif
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
@@ -250,9 +252,11 @@ void PiwikTracker::sendPing() {
     q.addQueryItem("ping", "1");
     url.setQuery(q);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
         QNetworkAccessManager::Accessible);
+#endif
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
@@ -293,9 +297,11 @@ void PiwikTracker::sendEvent(const QString& path, const QString& eventCategory,
 
     url.setQuery(q);
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     // try to ensure the network is accessible
     _networkAccessManager.setNetworkAccessible(
         QNetworkAccessManager::Accessible);
+#endif
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
