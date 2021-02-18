@@ -120,7 +120,7 @@ PiwikTracker::PiwikTracker(QCoreApplication* parent, QUrl trackerUrl,
 #endif
 
     // for QT >= 5.4 we can use QSysInfo
-    // Piwik doesn't recognize that on Mac OS X very well
+    // Piwik doesn't recognize that on macOS very well
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
 #ifdef Q_OS_MAC
     operatingSystem = "Macintosh " + QSysInfo::prettyProductName();
