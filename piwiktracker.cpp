@@ -71,7 +71,7 @@ PiwikTracker::PiwikTracker(QCoreApplication* parent, QUrl trackerUrl,
         // create a client id if none was in the settings
         if (!settings.contains("PiwikClientId")) {
             QByteArray ba;
-            ba.append(QUuid::createUuid().toString());
+            ba.append(QUuid::createUuid()..toByteArray());
 
             // generate a random md5 hash
             QString md5Hash = QString(
