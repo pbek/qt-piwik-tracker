@@ -231,8 +231,13 @@ void PiwikTracker::sendVisit(const QString& path, const QString& actionName) {
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
             SLOT(replyError(QNetworkReply::NetworkError)));
+#else
+    connect(reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
+#endif
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
@@ -260,8 +265,13 @@ void PiwikTracker::sendPing() {
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
             SLOT(replyError(QNetworkReply::NetworkError)));
+#else
+    connect(reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
+#endif
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
@@ -305,8 +315,13 @@ void PiwikTracker::sendEvent(const QString& path, const QString& eventCategory,
 
     QNetworkReply* reply = _networkAccessManager.get(QNetworkRequest(url));
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
             SLOT(replyError(QNetworkReply::NetworkError)));
+#else
+    connect(reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+            SLOT(replyError(QNetworkReply::NetworkError)));
+#endif
 
     // ignoring SSL errors
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply,
